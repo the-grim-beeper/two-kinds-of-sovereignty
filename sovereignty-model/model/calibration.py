@@ -3,7 +3,7 @@
 All parameters documented with sources. This module is the single source
 of truth for calibration across all three model layers.
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import numpy as np
 
 

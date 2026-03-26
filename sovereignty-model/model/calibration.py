@@ -64,3 +64,15 @@ def h_sigma(sigma: float, a: float = 2.0, b: float = 0.5) -> float:
 def phi_dependency(D: float, scale: float = 0.1) -> float:
     """Dependency-accelerated depreciation. φ(D) = scale * D²"""
     return scale * D ** 2
+
+
+def parameter_sweep(param_name, values, base_params=None, alpha=0.3, sigma=2.0):
+    """Sweep a single parameter, running forward simulation for each value."""
+    from model.analytical import simulate_forward
+    if base_params is None:
+        base_params = Parameters()
+    results = {}
+    for v in values:
+        p = Parameters(**{**base_params.__dict__, param_name: v})
+        results[v] = simulate_forward(alpha, sigma, p)
+    return results

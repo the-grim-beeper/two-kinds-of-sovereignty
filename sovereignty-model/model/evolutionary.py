@@ -133,6 +133,35 @@ def simulate_evolution(sigma, params, seed=42):
     )
 
 
+def find_capability_threshold(sigma, params, seed=42, n_replications=10):
+    """Find minimum initial capability for firms to benefit from constraint."""
+    cap_bins = np.linspace(0.1, 3.0, 20)
+    benefit_by_bin = np.zeros(len(cap_bins) - 1)
+    counts_by_bin = np.zeros(len(cap_bins) - 1)
+
+    for rep in range(n_replications):
+        s = seed + rep * 1000
+        r_constrained = simulate_evolution(sigma, params, seed=s)
+        r_baseline = simulate_evolution(0.0, params, seed=s)
+
+        init_caps = r_constrained.capability_history[0]
+        final_constrained = r_constrained.capability_history[-1]
+        final_baseline = r_baseline.capability_history[-1]
+        benefit = final_constrained - final_baseline
+
+        for i in range(len(cap_bins) - 1):
+            mask = (init_caps >= cap_bins[i]) & (init_caps < cap_bins[i + 1])
+            if mask.sum() > 0:
+                benefit_by_bin[i] += benefit[mask].mean()
+                counts_by_bin[i] += 1
+
+    avg_benefit = np.where(counts_by_bin > 0, benefit_by_bin / counts_by_bin, 0)
+    positive_bins = np.where(avg_benefit > 0)[0]
+    if len(positive_bins) == 0:
+        return cap_bins[-1]
+    return cap_bins[positive_bins[0]]
+
+
 def sweep_sigma(sigmas, params, n_replications=10, seed=42):
     results = {}
     for sigma in sigmas:

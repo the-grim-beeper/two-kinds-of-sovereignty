@@ -5,6 +5,7 @@ from model.evolutionary import (
     initialize_firms,
     simulate_evolution,
     sweep_sigma,
+    find_capability_threshold,
     FirmState,
 )
 from model.calibration import Parameters
@@ -83,3 +84,16 @@ class TestConvergence:
         cv_small = np.std(r_small[2.0]) / np.mean(r_small[2.0])
         cv_large = np.std(r_large[2.0]) / np.mean(r_large[2.0])
         assert cv_large < cv_small
+
+
+class TestCapabilityThreshold:
+    def test_returns_threshold(self):
+        p = Parameters(N=200, T=15.0)
+        threshold = find_capability_threshold(sigma=2.0, params=p, seed=42)
+        assert threshold > 0
+
+    def test_threshold_increases_with_sigma(self):
+        p = Parameters(N=200, T=15.0)
+        t_low = find_capability_threshold(sigma=1.0, params=p, seed=42)
+        t_high = find_capability_threshold(sigma=5.0, params=p, seed=42)
+        assert t_high >= t_low

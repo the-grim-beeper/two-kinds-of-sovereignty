@@ -1,7 +1,7 @@
 """Tests for the calibration module (TDD — written before implementation)."""
 import math
 import pytest
-from model.calibration import Parameters, window_openness, h_sigma, phi_dependency
+from model.calibration import Parameters, window_openness, h_sigma, phi_dependency, parameter_sweep
 
 
 class TestParameterDefaults:
@@ -69,3 +69,17 @@ class TestHSigma:
         # Slight perturbations should give lower values
         assert h_at_star >= h_sigma(sigma_star - 0.01, b=b)
         assert h_at_star >= h_sigma(sigma_star + 0.01, b=b)
+
+
+class TestParameterSweep:
+    def test_sweep_returns_results(self):
+        results = parameter_sweep("lam", [0.1, 0.3, 0.5])
+        assert len(results) == 3
+
+    def test_higher_lock_in_speed_increases_dependency(self):
+        results = parameter_sweep("lam", [0.1, 0.5])
+        assert results[0.5].D[-1] > results[0.1].D[-1]
+
+    def test_faster_window_closure_reduces_kf(self):
+        results = parameter_sweep("gamma", [0.05, 0.2])
+        assert results[0.05].Kf[-1] > results[0.2].Kf[-1]

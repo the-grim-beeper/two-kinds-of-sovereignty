@@ -82,3 +82,20 @@ def find_optimal_alpha(sigma, params, n_grid=50):
     result = minimize_scalar(lambda a: -simulate_forward(a, sigma, params).V_total, bounds=(lo, hi), method="bounded")
 
     return OptimalAlphaResult(alpha_star=result.x, V_star=-result.fun, alpha_grid=alpha_grid, V_grid=V_grid)
+
+
+def compute_comparative_statics(params=None, alpha=0.3, sigma=2.0):
+    """Compute comparative statics for key parameters."""
+    from model.calibration import parameter_sweep
+    if params is None:
+        from model.calibration import Parameters
+        params = Parameters()
+    statics = {}
+    for param, values in [
+        ("lam", [0.1, 0.2, 0.3, 0.4, 0.5]),
+        ("gamma", [0.05, 0.1, 0.15, 0.2, 0.25]),
+        ("beta", [0.3, 0.4, 0.5, 0.6, 0.7]),
+    ]:
+        results = parameter_sweep(param, values, params, alpha, sigma)
+        statics[param] = {v: r.V_total for v, r in results.items()}
+    return statics

@@ -1,7 +1,23 @@
-"""sovereignty-model: formal economic model of AI sovereignty dynamics.
+"""Sovereignty economic model — three-layer nested framework.
 
-Three-layer architecture:
-  - Layer 1: Analytical — continuous-time state equations and Hamiltonian
-  - Layer 2: Evolutionary — agent-based firm simulation
-  - Layer 3: Policy — comparative statics and intervention analysis
+Layer 1 (Analytical): Optimal control problem for sovereignty allocation
+Layer 2 (Evolutionary): Agent-based simulation of selection pressure
+Layer 3 (Policy): Actionable policy recommendations from observables
 """
+from model.calibration import Parameters, window_openness, h_sigma
+from model.analytical import simulate_forward, find_optimal_alpha, compute_shadow_price_of_delay
+from model.evolutionary import simulate_evolution, sweep_sigma
+from model.policy import compute_regime_comparison, compute_policy_recommendation
+
+__all__ = [
+    "Parameters",
+    "window_openness",
+    "h_sigma",
+    "simulate_forward",
+    "find_optimal_alpha",
+    "compute_shadow_price_of_delay",
+    "simulate_evolution",
+    "sweep_sigma",
+    "compute_regime_comparison",
+    "compute_policy_recommendation",
+]

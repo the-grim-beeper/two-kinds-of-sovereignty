@@ -22,6 +22,18 @@ COLORS = {
 st.title("Two Kinds of Sovereignty — Economic Model")
 st.markdown("*Interactive companion to the formal model. Explore how allocation, constraint intensity, and window dynamics shape sovereignty trajectories.*")
 
+# PDF download link
+import pathlib
+pdf_path = pathlib.Path(__file__).parent / "static" / "sovereignty_model.pdf"
+if pdf_path.exists():
+    with open(pdf_path, "rb") as f:
+        st.download_button(
+            label="Download formal model specification (PDF)",
+            data=f,
+            file_name="sovereignty_model.pdf",
+            mime="application/pdf",
+        )
+
 st.sidebar.header("Model Parameters")
 D0 = st.sidebar.slider("Initial dependency D₀", 0.0, 1.0, 0.67, 0.01)
 R = st.sidebar.slider("R&D intensity (% GDP)", 0.01, 0.06, 0.022, 0.001, format="%.3f")

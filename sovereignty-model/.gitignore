@@ -7,5 +7,8 @@ dist/
 build/
 .pytest_cache/
 output/figures/
-output/latex/
+output/latex/*.aux
+output/latex/*.log
+output/latex/*.toc
+output/latex/*.out
 *.DS_Store
